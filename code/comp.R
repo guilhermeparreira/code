@@ -1,3 +1,4 @@
+source("https://raw.githubusercontent.com/walmes/wzRfun/master/R/pairwise.R") # Cria os contrastes 2 x2. Uso a função acp()
 ## --------------------------------------------------------------------------
 # Interação entre 2 categóricas
 ## --------------------------------------------------------------------------
@@ -9,7 +10,7 @@ mat <- function(fixed, effect, data){
   data$y <- runif(nrow(data))
   form <- as.formula(paste("y", " ~ ", fixed))
   m0 <- lm(form, data = data)
-  K <- LSmatrix(m0, effect = effect)
+  K <- doBy::LSmatrix(m0, effect = effect)
   grid <- attr(K, "grid")
   grid <- grid[, 1:2]
   K2 <- by(K, grid[, 1], as.matrix)                       # O 1º efeito é fixado; e o 2º efeito é comparado dentro das linhas
@@ -37,7 +38,6 @@ glht <- function(mat, model, resp = 1, alpha = 0.05, transf = F){
   )
   
   # Calcula os Contrastes
-  source("https://raw.githubusercontent.com/walmes/wzRfun/master/R/pairwise.R")
   ctr <- apc(mat) # Essa função do prof. Walmes calcula todas as comparacoes 
   d <- ctr%*%coefs$Estimates   # Calcula a diferença em média na escala do preditor
   var <- ctr%*%vcovs%*%t(ctr)  # Calcula a variância da diferença em média na escala do preditor
@@ -152,8 +152,6 @@ glht.s <- function(model, resp, mat, order, transf = F){
                        ic.sup = mu+qnorm(quantil)*e.p  # IC via distribuição Z
   )
   
-  # Calcula os Contrastes
-  source("https://raw.githubusercontent.com/walmes/wzRfun/master/R/pairwise.R")
   ctr <- apc(mat) # Essa função do prof. Walmes calcula todas as comparacoes 
   d <- ctr%*%coefs$Estimates   # Calcula a diferença em média na escala do preditor
   var <- ctr%*%vcovs%*%t(ctr)  # Calcula a variância da diferença em média na escala do preditor
