@@ -10,7 +10,7 @@ mat <- function(fixed, effect, data){
   data$y <- runif(nrow(data))
   form <- as.formula(paste("y", " ~ ", fixed))
   m0 <- lm(form, data = data)
-  K <- doBy::LEmatrix(m0, effect = effect)
+  K <- doBy::LE_matrix(m0, effect = effect)
   grid <- attr(K, "grid")
   grid <- grid[, 1:2]
   K2 <- by(K, grid[, 1], as.matrix)                       # O 1º efeito é fixado; e o 2º efeito é comparado dentro das linhas
