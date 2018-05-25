@@ -1,3 +1,7 @@
+## --------------------------------------------------------------------------
+# Interação entre 2 categóricas
+## --------------------------------------------------------------------------
+
 # fixed <- "estac * season"
 # effect <- c("estac", "season")
 # Matriz para interação 2x2 - Categóricas
@@ -14,7 +18,7 @@ mat <- function(fixed, effect, data){
 }
 # k1 <- mat(fixed, effect, m1$data)
 # Interação 2x2
-glht <- function(mat, model, resp = 1, alpha = 0.05, transf = F, effect = effect){
+glht <- function(mat, model, resp = 1, alpha = 0.05, transf = F){
   coef.mat <- coef(model, type = "beta")      # Obtem TODOS os coeficientes fixos do modelo
   coefs <- coef.mat[coef.mat$Response==resp,] # Obtem da variável resposta em questão
   positions <- as.numeric(row.names(coef.mat[coef.mat$Response==resp, ])) #Posições das variáveis
@@ -77,8 +81,9 @@ glht <- function(mat, model, resp = 1, alpha = 0.05, transf = F, effect = effect
 }
 # glht(k1[[5]], m1, resp = 3, transf = F)
 
-## Interação entre categórica e numérica
-# 5ª variável resposta
+## --------------------------------------------------------------------------
+# Interação entre categórica e numérica
+## --------------------------------------------------------------------------
 # model <- m1
 # resp <- 6
 # data <- dat
@@ -107,9 +112,10 @@ intcf <- function(model, resp, data, fixed, alpha = 0.05){
 }
 # dat <- intcf(m1, 6, dat, "estac * ano")
 
-# Matrix para 1 covariável categórica
 
-# Matriz para 1 único fator
+## --------------------------------------------------------------------------
+# 1 covariável categórica
+## --------------------------------------------------------------------------
 mat2 <- function(fixed, data){
   data$y <- runif(nrow(data))
   form <- as.formula(paste("y", " ~ ", fixed))
@@ -121,9 +127,11 @@ mat2 <- function(fixed, data){
 }
 
 # fixed <- "estac" # Variável que você quer comparar
-# order <- 2:5     # Ordem dos coeficientes "fixed"
 # mat <- mat2(fixed, dat) # Matriz
+
 # resp <- 1        # Ordem da resposta do mcglm
+# order <- 2:5     # Ordem dos coeficientes "fixed"
+
 # Comparações para 1 único fator
 glht.s <- function(model, resp, mat, order, transf = F){
   coef.mat <- coef(model, type = "beta")      # Obtem TODOS os coeficientes fixos do m1o
