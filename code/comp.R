@@ -132,13 +132,13 @@ inv.logit <- function(x){
 
 # Formata o resultado do glht.s
 formatar <- function(a, resp){
-  kable(a[[1]], 
+  print(kable(a[[1]], 
         caption = paste0("Proporção da proteína ", resp, " ajustada pelo modelo para cada tipo de corte"), 
-        align = "c")
+        align = "c"))
 
-  kable(a[[2]], 
+  print(kable(a[[2]], 
         caption = paste0("Razão de Chances entre os tipos de corte para a proteína ", resp),
-        align = "c")
+        align = "c"))
 }
 # fixed <- "estac" # Variável que você quer comparar
 # mat <- mat2(fixed, dat) # Matriz
