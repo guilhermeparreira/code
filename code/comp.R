@@ -179,9 +179,10 @@ glht.s <- function(model, resp, covariate, data, order, transf = F, alpha = 0.05
   # Formata, calcular medidas adicionais
   z.value <- abs(d/sd)
   p.values <- (2*pnorm(z.value, lower.tail = F)) # Bilateral
-  p.values <- fixp(ifelse(p.values>=1,1,p.values))
+  p.values <- ifelse(p.values>=1,1,p.values)
   p.values.adj <- p.adjust(p.values, method = "fdr")
   p.values.adj <- fixp(ifelse(p.values.adj>=1,1,p.values.adj))
+  p.values <- fixp(p.values)
   # Intervalos de confiança
   IC.Inf <- d - qnorm(quantil)*sd # Intervalo de confiança sem correção
   IC.Sup <- d + qnorm(quantil)*sd
