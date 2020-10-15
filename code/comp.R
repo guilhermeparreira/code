@@ -205,11 +205,12 @@ glht.s <- function(model, resp, covariate, data, order, transf = F, alpha = 0.05
   } else if (transf == "inv.logit"){ # For proportion; 0/1 data
     # Transformation of the estimates
     mu.int <- within(mu.int, {
-      Media <- inv.logit(Media)
-      ic.inf <- inv.logit(ic.inf)
-      ic.sup <- inv.logit(ic.sup)
+      Media <- inv.logit(Media)*100
+      ic.inf <- inv.logit(ic.inf)*100
+      ic.sup <- inv.logit(ic.sup)*100
     })
     mu.int <- mu.int[, -2] # Retira o Erro padrão pois não está na escala da prob
+    names(mu.int) <- c("Média (%)", "IC.Inf 95% (%)", "IC.Sup 95% (%)")
     # Transformation of the contrasts
     resumo <- within(resumo, {
       Estimativa <- inv.logit(Estimativa)
@@ -217,6 +218,7 @@ glht.s <- function(model, resp, covariate, data, order, transf = F, alpha = 0.05
       IC.Sup <- inv.logit(IC.Sup)
     })
     resumo <- resumo[, -2] # Retira o Erro padrão pois não está na escala de prob
+    names(resumo) <- c("Razão de Chances", "Z", "Valor-p", "Valor-p-FDR", "IC.Inf 95%", "IC.Sup 95%")
   }
   list(mu.int,
        resumo)
