@@ -130,7 +130,16 @@ inv.logit <- function(x){
   1/(1+exp(-x))
 }
 
+# Formata o resultado do glht.s
+formatar <- function(a, resp){
+  kable(a[[1]], 
+        caption = paste0("Proporção da proteína ", resp, " ajustada pelo modelo para cada tipo de corte"), 
+        align = "c")
 
+  kable(a[[2]], 
+        caption = paste0("Razão de Chances entre os tipos de corte para a proteína ", resp),
+        align = "c")
+}
 # fixed <- "estac" # Variável que você quer comparar
 # mat <- mat2(fixed, dat) # Matriz
 
