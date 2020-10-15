@@ -125,6 +125,11 @@ mat2 <- function(fixed, data){
   rownames(K) <- levels(data[, fixed]) # Somente coloca os nomes nas linhas
   return(K)
 }
+# Inverse logit function for binomial family
+inv.logit <- function(x){
+  1/(1+exp(-x))
+}
+
 
 # fixed <- "estac" # Variável que você quer comparar
 # mat <- mat2(fixed, dat) # Matriz
@@ -133,7 +138,7 @@ mat2 <- function(fixed, data){
 # order <- 2:5     # Ordem dos coeficientes "fixed"
 
 # Comparações para 1 único fator
-glht.s <- function(model, resp, mat, order, transf = F, alpha = 0.05){
+glht.s <- function(model, resp, mat, order, transf = NULL, alpha = 0.05){
   coef.mat <- coef(model, type = "beta")      # Obtem TODOS os coeficientes fixos do m1o
   coefs <- coef.mat[coef.mat$Response==resp,] # Obtem da variável resposta em questão
   positions <- as.numeric(row.names(coef.mat[coef.mat$Response==resp,])) #Posições das variáveis
@@ -149,9 +154,7 @@ glht.s <- function(model, resp, mat, order, transf = F, alpha = 0.05){
   mu.int <- data.frame(Media = mu,
                        ErroPadrao   = e.p,
                        ic.inf = mu-qnorm(quantil)*e.p,  # IC via distribuição Z
-                       ic.sup = mu+qnorm(quantil)*e.p  # IC via distribuição Z
-  )
-  
+                       ic.sup = mu+qnorm(quantil)*e.p)  # IC via distribuição Z
   ctr <- apc(mat) # Essa função do prof. Walmes calcula todas as comparacoes 
   d <- ctr%*%coefs$Estimates   # Calcula a diferença em média na escala do preditor
   var <- ctr%*%vcovs%*%t(ctr)  # Calcula a variância da diferença em média na escala do preditor
@@ -174,19 +177,36 @@ glht.s <- function(model, resp, mat, order, transf = F, alpha = 0.05){
                        IC.Inf = IC.Inf,
                        IC.Sup = IC.Sup)
   
-  if (transf){
+  if (transf == "exp"){
+    # Transformation of the estimates
     mu.int <- within(mu.int, {
       Media <- exp(Media)
       ic.inf <- exp(ic.inf)
       ic.sup <- exp(ic.sup)
     })
     mu.int <- mu.int[, -2] # Retira o Erro padrão pois não está na escala do log
+    # Transformation of the contrasts
     resumo <- within(resumo, {
       Estimativa <- exp(Estimativa)
       IC.Inf <- exp(IC.Inf)
       IC.Sup <- exp(IC.Sup)
     })
     resumo <- resumo[, -2]
+  } else if (transf == "inv.logit"){ # For proportion; 0/1 data
+    # Transformation of the estimates
+    mu.int <- within(mu.int, {
+      Media <- inv.logit(Media)
+      ic.inf <- inv.logit(ic.inf)
+      ic.sup <- inv.logit(ic.sup)
+    })
+    mu.int <- mu.int[, -2] # Retira o Erro padrão pois não está na escala da prob
+    # Transformation of the contrasts
+    resumo <- within(resumo, {
+      Estimativa <- inv.logit(Estimativa)
+      IC.Inf <- inv.logit(IC.Inf)
+      IC.Sup <- inv.logit(IC.Sup)
+    })
+    resumo <- resumo[, -2] # Retira o Erro padrão pois não está na escala de prob
   }
   list(mu.int,
        resumo)
