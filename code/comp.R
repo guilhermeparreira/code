@@ -189,7 +189,7 @@ glht.s <- function(model, resp, covariate, data, order, transf = F, alpha = 0.05
                        `Erro Padrão` = sd,
                        Valor.Z = z.value,
                        Valorp = p.values,
-                       Valorp.adj = round(p.values.adj,6),
+                       Valorp.adj = p.values.adj,
                        IC.Inf = IC.Inf,
                        IC.Sup = IC.Sup)
   
