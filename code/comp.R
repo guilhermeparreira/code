@@ -140,6 +140,12 @@ formatar <- function(a, resp){
         caption = paste0("Razão de Chances entre os tipos de corte para a proteína ", resp),
         align = "c"))
 }
+# Formata o valor-p
+fixp <- function(x, dig=3){
+  x <- round(x, dig)
+  x <- ifelse(x == 0, paste0("<.", paste0(rep(0,dig-1), collapse=""), "1"), x)
+  x
+}
 # fixed <- "estac" # Variável que você quer comparar
 # mat <- mat2(fixed, dat) # Matriz
 
@@ -173,9 +179,9 @@ glht.s <- function(model, resp, covariate, data, order, transf = F, alpha = 0.05
   # Formata, calcular medidas adicionais
   z.value <- abs(d/sd)
   p.values <- (2*pnorm(z.value, lower.tail = F)) # Bilateral
-  p.values <- ifelse(p.values>=1,1,p.values)
+  p.values <- fixp(ifelse(p.values>=1,1,p.values))
   p.values.adj <- p.adjust(p.values, method = "fdr")
-  p.values.adj <- ifelse(p.values.adj>=1,1,p.values.adj)
+  p.values.adj <- fixp(ifelse(p.values.adj>=1,1,p.values.adj))
   # Intervalos de confiança
   IC.Inf <- d - qnorm(quantil)*sd # Intervalo de confiança sem correção
   IC.Sup <- d + qnorm(quantil)*sd
