@@ -138,7 +138,8 @@ inv.logit <- function(x){
 # order <- 2:5     # Ordem dos coeficientes "fixed"
 
 # Comparações para 1 único fator
-glht.s <- function(model, resp, mat, order, transf = NULL, alpha = 0.05){
+glht.s <- function(model, resp, covariate, data, order, transf = F, alpha = 0.05){
+  mat <- mat2(covariate, data)
   coef.mat <- coef(model, type = "beta")      # Obtem TODOS os coeficientes fixos do m1o
   coefs <- coef.mat[coef.mat$Response==resp,] # Obtem da variável resposta em questão
   positions <- as.numeric(row.names(coef.mat[coef.mat$Response==resp,])) #Posições das variáveis
