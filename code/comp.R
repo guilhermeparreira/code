@@ -117,12 +117,14 @@ intcf <- function(model, resp, data, fixed, alpha = 0.05){
 # 1 covariável categórica
 ## --------------------------------------------------------------------------
 mat2 <- function(fixed, data){
-  data$y <- runif(nrow(data))
-  form <- as.formula(paste("y", " ~ ", fixed))
-  m0 <- lm(form, data = data)
-  K <- model.matrix(m0)
-  K <- unique(K)
-  rownames(K) <- levels(data[, fixed]) # Somente coloca os nomes nas linhas
+  # Try on VanessaSotoMaior.Rmd file!! (It works on Mayara Regressao -> factor with 2 and 3 levels)
+  #data$y <- runif(nrow(data))
+  #form <- as.formula(paste("y", " ~ ", fixed))
+  #m0 <- lm(form, data = data)
+  #K <- model.matrix(m0)
+  #K <- unique(K)
+  #rownames(K) <- levels(data[, fixed]) # Somente coloca os nomes nas linhas
+  K <- cbind(1, with(data, contrasts(get(fixed))))
   return(K)
 }
 # Inverse logit function for binomial family
