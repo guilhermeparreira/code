@@ -157,7 +157,7 @@ glht.s <- function(model, resp, covariate, data, order, transf = F, alpha = 0.05
   mat <- mat2(covariate, data)
   coef.mat <- coef(model, type = "beta")      # Obtem TODOS os coeficientes fixos do m1o
   coefs <- coef.mat[coef.mat$Response==resp,] # Obtem da variável resposta em questão
-  positions <- as.numeric(row.names(coef.mat[coef.mat$Response==resp,])) #Posições das variáveis
+  positions <- as.numeric(row.names(coefs)) #Posições das variáveis
   vcovs <- as.matrix(vcov(model))[positions , positions] # Matriz de variância e covariância para a variável resposta
   coefs <- coefs[c(1, order), ]
   vcovs <- vcovs[c(1, order), c(1, order)]
@@ -220,9 +220,9 @@ glht.s <- function(model, resp, covariate, data, order, transf = F, alpha = 0.05
     names(mu.int) <- c("Média (%)", "IC.Inf 95% (%)", "IC.Sup 95% (%)")
     # Transformation of the contrasts
     resumo <- within(resumo, {
-      Estimativa <- inv.logit(Estimativa)
-      IC.Inf <- inv.logit(IC.Inf)
-      IC.Sup <- inv.logit(IC.Sup)
+      Estimativa <- exp(Estimativa)
+      IC.Inf <- exp(IC.Inf)
+      IC.Sup <- exp(IC.Sup)
     })
     resumo <- resumo[, -2] # Retira o Erro padrão pois não está na escala de prob
     names(resumo) <- c("Razão de Chances", "Z", "Valor-p", "Valor-p-FDR", "IC.Inf 95%", "IC.Sup 95%")
